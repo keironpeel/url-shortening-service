@@ -1,0 +1,10 @@
+### Create Short URL
+POST localhost:8080/shorten
+Content-Type: application/json
+
+{
+    "url": "https://youtube.com"
+}
+
+### Retrieve Original URL
+GET localhost:8080/shorten/abc123
