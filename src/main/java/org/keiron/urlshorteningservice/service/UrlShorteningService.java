@@ -1,5 +1,6 @@
 package org.keiron.urlshorteningservice.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.keiron.urlshorteningservice.entity.UrlEntity;
 import org.keiron.urlshorteningservice.repository.UrlRepository;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ public class UrlShorteningService {
         this.repository = repository;
     }
 
+    @Transactional
     public UrlEntity createShortUrl(String longUrl) {
         UrlEntity entity = new UrlEntity();
         entity.setUrl(longUrl);
@@ -24,11 +26,13 @@ public class UrlShorteningService {
         return repository.save(entity);
     }
 
+    @Transactional(readOnly = true)
     public UrlEntity getUrlEntry(String shortCode) {
         return repository.findByShortCode(shortCode)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "URL not found"));
     }
 
+    @Transactional
     public UrlEntity updateShortUrl(String shortCode, String newLongUrl) {
         UrlEntity entity = repository.findByShortCode(shortCode)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "URL not found"));
@@ -36,5 +40,14 @@ public class UrlShorteningService {
         entity.setUrl(newLongUrl);
 
         return repository.save(entity);
+    }
+
+    @Transactional
+    public void deleteShortUrl(String shortCode) {
+        if (!repository.existsByShortCode(shortCode)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "URL not found");
+        }
+
+        repository.deleteByShortCode(shortCode);
     }
 }

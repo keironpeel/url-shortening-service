@@ -49,3 +49,9 @@ Content-Type: application/json
 {
   "url": "https://google.com"
 }
+
+### Delete Short URL
+DELETE localhost:8080/shorten/abc123
+
+### Delete Short URL (Not found)
+DELETE localhost:8080/shorten/abc124

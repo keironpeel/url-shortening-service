@@ -62,4 +62,10 @@ public class ShortenController {
                 updatedUrl.getUpdatedAt()
         );
     }
+
+    @DeleteMapping("/{shortCode}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteShortUrl(@PathVariable String shortCode) {
+        urlShorteningService.deleteShortUrl(shortCode);
+    }
 }

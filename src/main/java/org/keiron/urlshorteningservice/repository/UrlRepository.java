@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface UrlRepository extends JpaRepository<UrlEntity, Integer> {
     Optional<UrlEntity> findByShortCode(String shortCode);
+    boolean existsByShortCode(String shortCode);
+    void deleteByShortCode(String shortCode);
 }

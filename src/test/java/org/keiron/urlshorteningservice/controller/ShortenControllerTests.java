@@ -146,4 +146,17 @@ public class ShortenControllerTests {
                 .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void testDeleteShortUrl() throws Exception {
+        mockMvc.perform(delete("/shorten/abc123")).andExpect(status().isNoContent());
+    }
+
+    @Test
+    void testDeleteShortUrlNotFound() throws Exception {
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND))
+                .when(urlService).deleteShortUrl("abc124");
+
+        mockMvc.perform(delete("/shorten/abc124")).andExpect(status().isNotFound());
+    }
 }
