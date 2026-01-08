@@ -59,7 +59,7 @@ public class ShortenControllerTests {
     @Test
     void testShortenUrlWithNoUrlProvided() throws Exception {
         mockMvc.perform(post("/shorten"))
-                .andExpect(status().is(400))
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Required request body is missing"))
         ;
     }
@@ -70,14 +70,13 @@ public class ShortenControllerTests {
 
         mockMvc.perform(post("/shorten")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body))).andExpect(status().is(400))
+                .content(objectMapper.writeValueAsString(body))).andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.url").value("Please provide a valid URL (e.g: https://youtube.com)"))
         ;
     }
 
     @Test
     void testRetrieveOriginalUrl() throws Exception {
-        // Mock Entity
         UrlEntity mockEntity = new UrlEntity();
         mockEntity.setUrl(LONG_URL);
         mockEntity.setShortCode("abc123");
@@ -86,7 +85,7 @@ public class ShortenControllerTests {
         Mockito.when(urlService.getUrlEntry("abc123")).thenReturn(mockEntity);
 
         mockMvc.perform(get("/shorten/abc123"))
-                .andExpect(status().is(200))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.shortCode").value("abc123"))
                 .andExpect(jsonPath("$.url").value(LONG_URL));
     }
@@ -158,5 +157,30 @@ public class ShortenControllerTests {
                 .when(urlService).deleteShortUrl("abc124");
 
         mockMvc.perform(delete("/shorten/abc124")).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testGetUrlStats() throws Exception {
+        UrlEntity mockEntity = new UrlEntity();
+        mockEntity.setUrl(LONG_URL);
+        mockEntity.setShortCode("abc123");
+        mockEntity.setAccessCount(10);
+        ReflectionTestUtils.setField(mockEntity, "id", 1);
+
+        Mockito.when(urlService.getUrlEntry("abc123")).thenReturn(mockEntity);
+
+        mockMvc.perform(get("/shorten/abc123/stats"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.shortCode").value("abc123"))
+                .andExpect(jsonPath("$.url").value(LONG_URL))
+                .andExpect(jsonPath("$.accessCount").value(10))
+        ;
+    }
+
+    @Test
+    void testGetUrlStatsNotFound() throws Exception {
+        Mockito.when(urlService.getUrlEntry("abc124")).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        mockMvc.perform(get("/shorten/abc124/stats")).andExpect(status().isNotFound());
     }
 }

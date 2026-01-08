@@ -55,3 +55,9 @@ DELETE localhost:8080/shorten/abc123
 
 ### Delete Short URL (Not found)
 DELETE localhost:8080/shorten/abc124
+
+### Get URL Statistics
+GET localhost:8080/shorten/abc123/stats
+
+### Get URL Statistics (Not found)
+GET localhost:8080/shorten/abc124/stats

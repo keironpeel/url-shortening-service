@@ -3,6 +3,7 @@ package org.keiron.urlshorteningservice.controller;
 import jakarta.validation.Valid;
 import org.keiron.urlshorteningservice.dto.ShortenedUrlRequest;
 import org.keiron.urlshorteningservice.dto.ShortenedUrlResponse;
+import org.keiron.urlshorteningservice.dto.ShortenedUrlStatsResponse;
 import org.keiron.urlshorteningservice.entity.UrlEntity;
 import org.keiron.urlshorteningservice.service.UrlShorteningService;
 import org.springframework.http.HttpStatus;
@@ -67,5 +68,19 @@ public class ShortenController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteShortUrl(@PathVariable String shortCode) {
         urlShorteningService.deleteShortUrl(shortCode);
+    }
+
+    @GetMapping("/{shortCode}/stats")
+    public ShortenedUrlStatsResponse getUrlStats(@PathVariable String shortCode) {
+        UrlEntity requestedUrl = urlShorteningService.getUrlEntry(shortCode);
+
+        return new ShortenedUrlStatsResponse(
+                requestedUrl.getId(),
+                requestedUrl.getUrl(),
+                requestedUrl.getShortCode(),
+                requestedUrl.getCreatedAt(),
+                requestedUrl.getUpdatedAt(),
+                requestedUrl.getAccessCount()
+        );
     }
 }
