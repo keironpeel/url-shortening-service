@@ -28,4 +28,13 @@ public class UrlShorteningService {
         return repository.findByShortCode(shortCode)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "URL not found"));
     }
+
+    public UrlEntity updateShortUrl(String shortCode, String newLongUrl) {
+        UrlEntity entity = repository.findByShortCode(shortCode)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "URL not found"));
+
+        entity.setUrl(newLongUrl);
+
+        return repository.save(entity);
+    }
 }

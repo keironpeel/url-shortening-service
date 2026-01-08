@@ -6,5 +6,46 @@ Content-Type: application/json
     "url": "https://youtube.com"
 }
 
+### Create Short URL (No body)
+POST localhost:8080/shorten
+
+### Create Short URL (Invalid body)
+POST localhost:8080/shorten
+Content-Type: application/json
+
+{
+  "url": "Hello world!"
+}
+
 ### Retrieve Original URL
 GET localhost:8080/shorten/abc123
+
+### Retrieve Original URL (Not found)
+GET localhost:8080/shorten/abc124
+
+### Update Short URL
+PUT localhost:8080/shorten/abc123
+Content-Type: application/json
+
+{
+  "url": "https://google.com"
+}
+
+### Update Short URL (No body)
+PUT localhost:8080/shorten/abc123
+
+### Update Short URL (Invalid body)
+PUT localhost:8080/shorten/abc123
+Content-Type: application/json
+
+{
+  "url": "Hello world!"
+}
+
+### Update Short URL (Original URL not found)
+PUT localhost:8080/shorten/abc124
+Content-Type: application/json
+
+{
+  "url": "https://google.com"
+}

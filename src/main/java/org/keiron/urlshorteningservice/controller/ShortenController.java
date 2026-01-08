@@ -1,7 +1,7 @@
 package org.keiron.urlshorteningservice.controller;
 
 import jakarta.validation.Valid;
-import org.keiron.urlshorteningservice.dto.CreateShortUrlRequest;
+import org.keiron.urlshorteningservice.dto.ShortenedUrlRequest;
 import org.keiron.urlshorteningservice.dto.ShortenedUrlResponse;
 import org.keiron.urlshorteningservice.entity.UrlEntity;
 import org.keiron.urlshorteningservice.service.UrlShorteningService;
@@ -21,7 +21,7 @@ public class ShortenController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ShortenedUrlResponse createShortUrl(
-            @Valid @RequestBody CreateShortUrlRequest request
+            @Valid @RequestBody ShortenedUrlRequest request
     ) {
         UrlEntity shortenedUrl = urlShorteningService.createShortUrl(request.url());
 
@@ -44,6 +44,22 @@ public class ShortenController {
                 requestedUrl.getShortCode(),
                 requestedUrl.getCreatedAt(),
                 requestedUrl.getUpdatedAt()
+        );
+    }
+
+    @PutMapping("/{shortCode}")
+    public ShortenedUrlResponse updateShortUrl(
+            @PathVariable String shortCode,
+            @Valid @RequestBody ShortenedUrlRequest request
+    ) {
+        UrlEntity updatedUrl = urlShorteningService.updateShortUrl(shortCode, request.url());
+
+        return new ShortenedUrlResponse(
+                updatedUrl.getId(),
+                updatedUrl.getUrl(),
+                updatedUrl.getShortCode(),
+                updatedUrl.getCreatedAt(),
+                updatedUrl.getUpdatedAt()
         );
     }
 }
