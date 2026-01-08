@@ -1,5 +1,6 @@
 package org.keiron.urlshorteningservice.service;
 
+import org.keiron.urlshorteningservice.util.RandomStringGenerator;
 import org.springframework.transaction.annotation.Transactional;
 import org.keiron.urlshorteningservice.entity.UrlEntity;
 import org.keiron.urlshorteningservice.repository.UrlRepository;
@@ -18,10 +19,15 @@ public class UrlShorteningService {
 
     @Transactional
     public UrlEntity createShortUrl(String longUrl) {
+        String shortCode;
+
+        do {
+            shortCode = RandomStringGenerator.generate();
+        } while (repository.existsByShortCode(shortCode));
+
         UrlEntity entity = new UrlEntity();
         entity.setUrl(longUrl);
-        //TODO: Create random string generation
-        entity.setShortCode("abc123");
+        entity.setShortCode(shortCode);
 
         return repository.save(entity);
     }
