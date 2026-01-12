@@ -1,6 +1,7 @@
 package org.keiron.urlshorteningservice.service;
 
 import org.keiron.urlshorteningservice.util.RandomStringGenerator;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import org.keiron.urlshorteningservice.entity.UrlEntity;
 import org.keiron.urlshorteningservice.repository.UrlRepository;
@@ -32,6 +33,7 @@ public class UrlShorteningService {
         return repository.save(entity);
     }
 
+    @Cacheable("urlEntryByShortCode")
     @Transactional(readOnly = true)
     public UrlEntity getUrlEntry(String shortCode) {
         return repository.findByShortCode(shortCode)
